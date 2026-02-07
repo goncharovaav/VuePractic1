@@ -9,11 +9,34 @@
     <script src="js/vue.js"></script>
     <script defer src="js/main.js"></script>
     <title>Product App</title>
+    <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
 <div id="app">
-    <h1>{{ product }}</h1>
-    <p>{{description}}</p>
+    <div class="product">
+        <div class="product-image">
+            <img v-bind:src="image" v-bind:alt="altText"/>
+        </div>
+        <div class="product-info">
+            <h1>{{ product }}</h1>
+            <a :href="link">More products like this</a>
+            <p v-if="inventory > 10">In Stock</p>
+            <p v-else-if="inventory <= 10 && inventory > 0">Almost sold out!</p>
+            <p v-else>Out of Stock</p>
+            <span v-if="onSale">On Sale </span>
+            <ul>
+                <li v-for="detail in details">{{detail}}</li>
+            </ul>
+            <div v-for="variant in variants" :key="variant.variantid">
+                <p>{{ variant.variantColor }}</p>
+            </div>
+            <ul>
+                <li v-for="size in sizes" :key="size.size">{{size}}</li>
+            </ul>
+        </div>
+
+    </div>
+
 </div>
 </body>
 </html>
