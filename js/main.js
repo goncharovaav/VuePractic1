@@ -126,4 +126,5 @@ let app = new Vue({
         premium:  true,
         details: ['80% cotton', '20% polyester', 'Gender-neutral'],
     }
+    //test
 })
