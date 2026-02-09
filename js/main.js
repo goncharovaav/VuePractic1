@@ -1,16 +1,3 @@
-Vue.component('product-details', {
-    props: {
-        details: {
-            type: Array,
-            required: true
-        }
-    },
-    template: `
-    <ul>
-        <li v-for="detail in details">{{detail}}</li>
-    </ul>
-    `
-})
 Vue.component('product', {
     props: {
         premium: {
@@ -29,6 +16,9 @@ Vue.component('product', {
             <p v-if="inStock">In Stock</p>
             <p v-else
                 :style="{textDecoration: 'line-through'}">Out of Stock</p>
+            <ul>
+                <li v-for="detail in details">{{detail}}</li>
+            </ul>
             <p>{{sale}}</p>
             <p>Shipping: {{ shipping }}</p>
             <div
@@ -41,9 +31,6 @@ Vue.component('product', {
             <ul>
                 <li v-for="size in sizes" :key="size.size">{{size}}</li>
             </ul>
-            <div class="cart">
-                <p> Cart({{ cart}})</p>
-            </div>
             <button v-on:click="addToCart"
                 :disabled="!inStock"
                 :class="{ disabledButton: !inStock }"
@@ -60,6 +47,7 @@ Vue.component('product', {
             brand: 'Vue Mastery',
             selectedVariant: 0,
             altText: "A pair of socks",
+            details: ['80% cotton', '20% polyester', 'Gender-neutral'],
             link: "https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords=socks.",
             onSale: true,
             variants: [
@@ -77,15 +65,16 @@ Vue.component('product', {
                 }
             ],
             sizes: ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'],
-            cart: 0,
         }
     },
     methods: {
         addToCart() {
-            this.cart += 1
+            this.$emit('add-to-cart',
+                this.variants[this.selectedVariant].variantId);
         },
         deleteToCart() {
-            this.cart -= 1
+            this.$emit('delete-to-cart',
+                this.variants[this.selectedVariant].variantId);
         },
         updateProduct(index) {
             this.selectedVariant = index;
@@ -124,7 +113,14 @@ let app = new Vue({
     el: '#app',
     data: {
         premium:  true,
-        details: ['80% cotton', '20% polyester', 'Gender-neutral'],
+        cart: [],
+    },
+    methods: {
+        updateCart(id) {
+            this.cart.push(id);
+        },
+        deleteCart(id) {
+            this.cart.pop(id);
+        }
     }
-    //test
 })
