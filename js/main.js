@@ -1,3 +1,78 @@
+Vue.component('product-review', {
+    template:`
+<form class="review-form" @submit.prevent="onSubmit">
+<p v-if="errors.length">
+<b>Please correct the following error(s):</b>
+<ul>
+  <li v-for="error in errors">{{ error }}</li>
+</ul>
+</p>
+
+
+ <p>
+   <label for="name">Name:</label>
+   <input id="name" v-model="name" placeholder="name">
+ </p>
+
+ <p>
+   <label for="review">Review:</label>
+   <textarea id="review" v-model="review"></textarea>
+ </p>
+
+ <p>
+   <label for="rating">Rating:</label>
+   <select id="rating" v-model.number="rating">
+     <option>5</option>
+     <option>4</option>
+     <option>3</option>
+     <option>2</option>
+     <option>1</option>
+   </select>
+ </p>
+<p>
+    <label for="recommended">Would you recommend this product?</label>
+    <select id="recommended" v-model.number="recommended">
+    <option>yes</option>
+    <option>no</option>
+    </select>
+</p>
+ <p>
+   <input type="submit" value="Submit"> 
+ </p>
+</form>
+    `,
+    data() {
+        return {
+            name: null,
+            review: null,
+            rating: null,
+            errors: [],
+            recommended: null,
+        }
+    },
+    methods: {
+        onSubmit() {
+            if(this.name && this.review && this.rating) {
+                let productReview = {
+                    name: this.name,
+                    review: this.review,
+                    rating: this.rating,
+                    recommended: this.recommended
+                }
+                this.$emit('review-submitted', productReview)
+                this.name = null
+                this.review = null
+                this.rating = null
+                this.recommended = null
+            } else {
+                if(!this.name) this.errors.push("Name required.")
+                if(!this.review) this.errors.push("Review required.")
+                if(!this.rating) this.errors.push("Rating required.")
+                if(!this.recommended) this.errors.push("Recommended required.")
+            }
+        },
+    }
+})
 Vue.component('product', {
     props: {
         premium: {
@@ -8,7 +83,7 @@ Vue.component('product', {
     template: `
     <div class="product">
         <div class="product-image">
-            <img v-bind:src="image" v-bind:alt="altText"/>
+        <img v-bind:src="image" v-bind:alt="altText" />
         </div>
         <div class="product-info">
             <h1>{{ title }}</h1>
@@ -79,7 +154,8 @@ Vue.component('product', {
         updateProduct(index) {
             this.selectedVariant = index;
             console.log(index);
-        }
+        },
+
     },
     computed: {
         title() {
@@ -114,6 +190,7 @@ let app = new Vue({
     data: {
         premium:  true,
         cart: [],
+        reviews: []
     },
     methods: {
         updateCart(id) {
@@ -121,6 +198,11 @@ let app = new Vue({
         },
         deleteCart(id) {
             this.cart.pop(id);
+        },
+
+        addReview(productReview){
+            this.reviews.push(productReview);
         }
+
     }
 })
