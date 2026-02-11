@@ -233,7 +233,12 @@ Vue.component('product', {
     mounted() {
         eventBus.$on('review-submitted', productReview => {
             this.reviews.push(productReview)
+            localStorage.setItem('reviews', JSON.stringify(this.reviews));
         })
+        saveReviews = localStorage.getItem('reviews');
+        if(saveReviews) {
+            this.reviews = JSON.parse(localStorage.getItem('reviews'));
+        }
     },
 })
 
